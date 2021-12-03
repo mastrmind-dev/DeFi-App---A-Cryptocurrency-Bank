@@ -38,15 +38,42 @@ contract("TokenFarm", ([owner, investor]) => {
     });
   });
 
-  describe('Token Farm Deployment', async() => {
-    it('has a name', async() => {
+  describe('Token Farm Deployment', async ()=> {
+    it('has a name', async () => {
       const name = await tokenFarm.name();
-      assert.equal(name, "Dapp Token Farm");
+      assert.equal(name, 'Dapp Token Farm');
     })
 
-    it('contract has tokens', async() => {
+    it('contract has tokens', async()=>{
       const balance = await dappToken.balanceOf(tokenFarm.address);
-      assert.equal(balance.toString(), tokens('1000000'));
+      assert.equal(balance.toString(), tokens('1000000'))
     })
   })
+
+describe('Farming tokens', async()=>{
+  it('rewards investors for staking mDai tokens', async () => {
+    //check current mDai balance of the investor before staking
+    let result = await daiToken.balanceOf(investor);
+    assert.equal(result.toString(), tokens('100'), 'correct the mDai balance of investor before staking');
+
+    await daiToken.approve(tokenFarm.address, tokens('100'), {from : investor});
+    await tokenFarm.stakeTokens(tokens('100'), {from : investor});
+
+    result = await daiToken.balanceOf(investor);
+    assert.equal(result.toString(), tokens('0'), 'correct the mDai balance of investor after staking');
+
+    result = await daiToken.balanceOf(tokenFarm.address);
+    assert.equal(result.toString(), tokens('100'), 'correct the mDai balance of Token Farm after staking');
+
+    result = await tokenFarm.stakingBalance(investor);
+    assert.equal(result.toString(), tokens('100'), 'correct the staked mDai balance of investor after staking');
+
+    result = await tokenFarm.isStaking(investor);
+    assert.equal(result, true, 'correct the staking status after staking');
+
+
+  })
+})
+
+
 });

@@ -20,12 +20,12 @@ contract TokenFarm {
 
     //stake tokens
     function stakeTokens(uint256 _amount) public {
-        daiToken.transformFrom(msg.sender, address(this), _amount);
+        daiToken.transferFrom(msg.sender, address(this), _amount);
 
         stakingBalance[msg.sender] = _amount + stakingBalance[msg.sender];
 
         if (!hasStaken[msg.sender]) {
-            staker.push(msg.sender);
+            stakers.push(msg.sender);
         }
 
         isStaking[msg.sender] = true;
