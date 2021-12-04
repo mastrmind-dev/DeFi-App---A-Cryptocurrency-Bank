@@ -1,5 +1,5 @@
 const { assert } = require("chai");
-const { default: Web3 } = require("web3");
+const { default: web3 } = require("web3");
 
 const DaiToken = artifacts.require("DaiToken");
 const DappToken = artifacts.require("DappToken");
