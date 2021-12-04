@@ -37,6 +37,19 @@ contract TokenFarm {
     }
 
     //2. unstake tokens
+    function unstakeTokens() public{
+        uint balance = stakingBalance[msg.sender];
+        
+        require(balance > 0, 'balance should be greater than 0');
+
+        daiToken.transfer(msg.sender, balance);
+
+        stakingBalance[msg.sender] = 0;
+        isStaking[msg.sender] = false;
+
+    }
+
+
 
     //3.give interests
 
