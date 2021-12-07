@@ -19,7 +19,7 @@ contract("TokenFarm", ([owner, investor]) => {
     dappToken = await DappToken.new();
     tokenFarm = await TokenFarm.new(dappToken.address, daiToken.address);
 
-    await dappToken.transfer(tokenFarm.address, tokens("1000000"));
+    await dappToken.transfer(tokenFarm.address, tokens("1000000"), {from : owner});
     await daiToken.transfer(investor, tokens("100"), { from: owner });
   });
 
