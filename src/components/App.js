@@ -5,6 +5,7 @@ import Web3 from "web3";
 import DaiToken from "../abis/DaiToken.json";
 import DappToken from "../abis/DappToken.json";
 import TokenFarm from "../abis/TokenFarm.json";
+import Main from "./Main";
 
 class App extends Component {
   constructor(props) {
@@ -41,11 +42,15 @@ class App extends Component {
   }
 
   async loadWeb3() {
-    if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum);
-      window.ethereum.request({ method: "eth_requestAccounts" });
-    } else {
-      alert("Please install metamask first!");
+    try {
+      if (window.ethereum) {
+        window.web3 = new Web3(window.ethereum);
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+      } else {
+        alert("Please install metamask first!");
+      }
+    } catch (error) {
+      alert('please connect to your account!');
     }
   }
 
@@ -54,7 +59,7 @@ class App extends Component {
       console.log("loading blockchain data....");
     }
 
-    const web3 = window.web3;//This is just for easy. So we don't have to type "window.web3" alaways, instead we can type just 'web3'.
+    const web3 = window.web3; //This is just for easy. So we don't have to type "window.web3" alaways, instead we can type just 'web3'.
     const accounts = await web3.eth.getAccounts();
     this.setState({ account: accounts[0] });
     console.log("current account address =>");
@@ -81,7 +86,7 @@ class App extends Component {
     console.log(daiTokenData);
 
     const daiToken = new web3.eth.Contract(DaiToken.abi, daiTokenData.address);
-    this.setState({ daiToken });//This will update the value of "this.state.daiToken" (because assinging variable's name is same as state property.)
+    this.setState({ daiToken }); //This will update the value of "this.state.daiToken" (because assinging variable's name is same as state property.)
     console.log("daiToken Contract =>");
     console.log(daiToken);
 
@@ -136,6 +141,19 @@ class App extends Component {
   }
 
   render() {
+    let content;
+    if (this.state.loading === true) {
+      content = <p>loading...</p>;
+    } else {
+      content = (
+        <Main
+          daiTokenBalance={this.state.daiTokenBalance}
+          dappTokenBalance={this.state.dappTokenBalance}
+          stakingBalance={this.state.stakingBalance}
+        />
+      );
+    }
+
     return (
       <div>
         <Navbar account={this.state.account} />
@@ -152,8 +170,7 @@ class App extends Component {
                   target="_blank"
                   rel="noopener noreferrer"
                 ></a>
-
-                <h1>Hello, World!</h1>
+                {content}
               </div>
             </main>
           </div>
