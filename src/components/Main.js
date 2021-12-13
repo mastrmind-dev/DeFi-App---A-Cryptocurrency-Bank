@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import web3 from "web3";
-import dai from '../dai.png';
+import dai from "../dai.png";
+import "./Main.css";
 
 class Main extends Component {
   constructor(props) {
@@ -34,25 +35,62 @@ class Main extends Component {
 
         <div className="card mb-4">
           <div className="card-body">
-            <form action="" className="mb-3">
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                let amount;
+                amount = this.input.value.toString();
+                amount = web3.utils.toWei(amount, "Ether");
+                console.log(this.input.value);
+                this.props.stakeTokens(amount);
+              }}
+              className="mb-3"
+            >
               <div>
-                <label htmlFor="" className="floa-left"><b>Stake Tokens</b></label>
+                <label htmlFor="" className="floa-left">
+                  <b>Stake Tokens</b>
+                </label>
                 <span className="float-right text-muted">
-                  Balance : {web3.utils.fromWei(this.props.daiTokenBalance, 'Ether')}
+                  Balance :{" "}
+                  {web3.utils.fromWei(this.props.daiTokenBalance, "Ether")}
                 </span>
               </div>
 
               <div className="input-group mb-4">
-                <input type="text" className="form-control form-control-lg" placeholder='0' required/>
+                <input
+                  type="number"
+                  ref={(input) => {
+                    this.input = input;
+                    console.log(this.input);
+                    //console.log(this.input.value)//no output at the begining because no value has been typed on input text bar
+                  }}
+                  className="form-control form-control-lg"
+                  placeholder="0"
+                  required
+                />
                 <div className="input-group-append">
                   <div className="input-group-text">
-                    <img src={dai} height='32' alt="" />
+                    <img src={dai} height="32" alt="" />
                     &nbsp;&nbsp; mDAI
                   </div>
                 </div>
               </div>
-              <button type="submit" className="btn btn-primary btn-block btn-lg">STAKE!</button>
+              <button
+                type="submit"
+                className="btn btn-primary btn-block btn-lg"
+              >
+                STAKE!
+              </button>
             </form>
+
+            <button
+              type="submit"
+              className="btn btn-link btn-block btn-sm btn-unstake"
+              onClick={(event) => {
+                event.preventDefault();
+                this.props.unstakeTokens();
+              }}
+            >UN-STAKE...</button>
           </div>
         </div>
       </div>
